@@ -6,7 +6,7 @@
     },
     "packages/js": {
       "releaseType": "node",
-      "packageName": "india-kit"
+      "packageName": "@india-kit/js"
     },
     "packages/cli": {
       "releaseType": "node",

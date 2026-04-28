@@ -12,7 +12,7 @@ Quick local publish steps (for a package):
 
 ```bash
 pnpm --filter @india-kit/core build
-pnpm --filter india-kit build
+pnpm --filter @india-kit/js build
 ```
 
 2. Verify `dist/` contains `cjs/` and `esm/` outputs and `index.d.ts`.
