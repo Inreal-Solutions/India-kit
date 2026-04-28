@@ -31,4 +31,8 @@
     "tsup": "^6.6.0",
     "rimraf": "^5.0.0"
   }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/india-kit/india-kit.git"
+  },
 }
