@@ -1,0 +1,31 @@
+name: Semantic Release (per-package)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  release-packages:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [core, js, cli]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install pnpm
+        run: npm i -g pnpm@8
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run semantic-release for package
+        working-directory: packages/${{ matrix.package }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "Running semantic-release in packages/${{ matrix.package }}"
+          npx semantic-release --no-ci || true

@@ -1,0 +1,19 @@
+name: Commit Lint
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Run commitlint
+        run: pnpm -w exec commitlint --from=HEAD~1 --to=HEAD

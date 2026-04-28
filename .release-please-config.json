@@ -1,0 +1,16 @@
+{
+  "packages": {
+    "packages/core": {
+      "releaseType": "node",
+      "packageName": "@india-kit/core"
+    },
+    "packages/js": {
+      "releaseType": "node",
+      "packageName": "india-kit"
+    },
+    "packages/cli": {
+      "releaseType": "node",
+      "packageName": "india-kit-cli"
+    }
+  }
+}

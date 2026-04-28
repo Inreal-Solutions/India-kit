@@ -1,0 +1,38 @@
+{
+  "name": "india-kit",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*",
+    "sdks/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "pnpm -w -r run build",
+    "dev": "pnpm -w -r run dev",
+    "test": "pnpm -w -r run test",
+    "release": "echo 'Run release workflow via CI'"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1",
+    "semantic-release": "^21.0.0",
+    "@semantic-release/commit-analyzer": "^10.0.0",
+    "@semantic-release/release-notes-generator": "^10.0.0",
+    "@semantic-release/changelog": "^6.0.0",
+    "@semantic-release/npm": "^9.0.0",
+    "@semantic-release/github": "^9.0.0",
+    "@semantic-release/git": "^10.0.0",
+    "@semantic-release/exec": "^6.0.0"
+  },
+  "scripts": {
+    "release:dry:core": "cd packages/core && npx semantic-release --dry-run",
+    "release:dry:js": "cd packages/js && npx semantic-release --dry-run",
+    "release:dry:cli": "cd packages/cli && npx semantic-release --dry-run",
+    "release:dry:all": "pnpm run release:dry:core && pnpm run release:dry:js && pnpm run release:dry:cli",
+    "release:core": "cd packages/core && npx semantic-release",
+    "release:js": "cd packages/js && npx semantic-release",
+    "release:cli": "cd packages/cli && npx semantic-release",
+    "release:all": "pnpm run release:core && pnpm run release:js && pnpm run release:cli"
+  }
+}

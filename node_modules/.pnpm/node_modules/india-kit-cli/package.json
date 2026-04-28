@@ -1,0 +1,33 @@
+{
+  "name": "india-kit-cli",
+  "version": "0.1.0",
+  "private": false,
+  "bin": {
+    "india-kit": "dist/bin.js"
+  },
+  "main": "dist/bin.js",
+  "files": ["dist"],
+  "prepare": "pnpm build",
+  "publishConfig": { "access": "public" },
+  "dependencies": {
+    "@india-kit/core": "workspace:~",
+    "commander": "^11.0.0",
+    "chalk": "^4.1.2",
+    "ora": "^6.1.2",
+    "inquirer": "^9.2.7",
+    "semver": "^7.3.8"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "postbuild": "node ./scripts/add-shebang.js",
+    "dev": "ts-node src/bin.ts",
+    "clean": "rimraf dist",
+    "prepare": "pnpm build"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0",
+    "@types/node": "^20.5.1",
+    "@types/inquirer": "^9.0.3",
+    "@types/semver": "^7.3.14"
+  }
+}

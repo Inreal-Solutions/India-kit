@@ -1,0 +1,28 @@
+name: Publish with provenance
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install pnpm
+        run: npm i -g pnpm@8
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm -w run build
+      - name: Create SLSA provenance and sign
+        run: |
+          echo 'NOTE: Add provider-specific provenance tooling here (cosign/grafeas or GitHub OIDC signing)'
+      - name: Upload provenance artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: provenance
+          path: .

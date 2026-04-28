@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install pnpm
+        run: npm i -g pnpm@8
+      - name: Install
+        run: pnpm install
+      - name: Build
+        run: pnpm run build
+      - name: Create release artifact
+        run: |
+          mkdir -p release
+          tar -czf release/india-kit-artifacts.tar.gz packages/core/dist packages/cli/dist packages/js/dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-kit-artifacts
+          path: release/india-kit-artifacts.tar.gz
