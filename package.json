@@ -11,7 +11,16 @@
     "build": "pnpm -w -r run build",
     "dev": "pnpm -w -r run dev",
     "test": "pnpm -w -r run test",
-    "release": "echo 'Run release workflow via CI'"
+    "release": "echo 'Run release workflow via CI'",
+    "prepare": "husky install",
+    "release:dry:core": "cd packages/core && npx semantic-release --dry-run",
+    "release:dry:js": "cd packages/js && npx semantic-release --dry-run",
+    "release:dry:cli": "cd packages/cli && npx semantic-release --dry-run",
+    "release:dry:all": "pnpm run release:dry:core && pnpm run release:dry:js && pnpm run release:dry:cli",
+    "release:core": "cd packages/core && npx semantic-release",
+    "release:js": "cd packages/js && npx semantic-release",
+    "release:cli": "cd packages/cli && npx semantic-release",
+    "release:all": "pnpm run release:core && pnpm run release:js && pnpm run release:cli"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
@@ -23,11 +32,14 @@
     "@semantic-release/npm": "^9.0.0",
     "@semantic-release/github": "^9.0.0",
     "@semantic-release/git": "^10.0.0",
-    "@semantic-release/exec": "^6.0.0"
+    "@semantic-release/exec": "^6.0.0",
+    "husky": "^8.0.0",
+    "@commitlint/cli": "^17.0.0",
+    "@commitlint/config-conventional": "^17.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "file:///C:/Users/TIGER/India-kit/.git"
+    "url": "https://github.com/OWNER/india-kit.git"
   },
   "scripts": {
     "release:dry:core": "cd packages/core && npx semantic-release --dry-run",
