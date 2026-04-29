@@ -37,3 +37,4 @@ var import_core2 = require("@india-kit/core");
   validateAadhaar,
   validatePAN
 });
+//# sourceMappingURL=index.js.map

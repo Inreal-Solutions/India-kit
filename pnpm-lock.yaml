@@ -106,7 +106,7 @@ importers:
   packages/js:
     dependencies:
       '@india-kit/core':
-        specifier: workspace:~
+        specifier: workspace:*
         version: link:../core
     devDependencies:
       rimraf:

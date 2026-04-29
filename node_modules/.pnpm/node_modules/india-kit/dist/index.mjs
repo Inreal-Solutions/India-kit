@@ -8,3 +8,4 @@ export {
   validateAadhaar,
   validatePAN
 };
+//# sourceMappingURL=index.mjs.map

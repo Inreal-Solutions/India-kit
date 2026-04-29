@@ -1,1 +1,1 @@
-export * from '@india-kit/core';
+export { maskPAN, mockAadhaar, mockPAN, validateAadhaar, validatePAN } from '@india-kit/core';

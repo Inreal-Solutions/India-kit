@@ -5,11 +5,7 @@
     "rootDir": "src",
     "baseUrl": ".",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "paths": {
-      "@india-kit/core": ["../core/src"],
-      "@india-kit/core/*": ["../core/src/*"]
-    }
+    "moduleResolution": "NodeNext"
   },
   "include": ["src/**/*"]
 }

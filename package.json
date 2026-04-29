@@ -8,15 +8,18 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "pnpm -w -r run build",
-    "dev": "pnpm -w -r run dev",
-    "test": "pnpm -w -r run test",
-    "release": "echo 'Run release workflow via CI'",
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r run dev",
+    "test": "pnpm -r run test",
     "prepare": "husky install",
+
+    "release": "echo \"Run release workflow via CI\"",
+
     "release:dry:core": "cd packages/core && npx semantic-release --dry-run",
     "release:dry:js": "cd packages/js && npx semantic-release --dry-run",
     "release:dry:cli": "cd packages/cli && npx semantic-release --dry-run",
     "release:dry:all": "pnpm run release:dry:core && pnpm run release:dry:js && pnpm run release:dry:cli",
+
     "release:core": "cd packages/core && npx semantic-release",
     "release:js": "cd packages/js && npx semantic-release",
     "release:cli": "cd packages/cli && npx semantic-release",
@@ -44,15 +47,5 @@
   "homepage": "https://github.com/Inreal-Solutions/India-kit",
   "bugs": {
     "url": "https://github.com/Inreal-Solutions/India-kit/issues"
-  },
-  "scripts": {
-    "release:dry:core": "cd packages/core && npx semantic-release --dry-run",
-    "release:dry:js": "cd packages/js && npx semantic-release --dry-run",
-    "release:dry:cli": "cd packages/cli && npx semantic-release --dry-run",
-    "release:dry:all": "pnpm run release:dry:core && pnpm run release:dry:js && pnpm run release:dry:cli",
-    "release:core": "cd packages/core && npx semantic-release",
-    "release:js": "cd packages/js && npx semantic-release",
-    "release:cli": "cd packages/cli && npx semantic-release",
-    "release:all": "pnpm run release:core && pnpm run release:js && pnpm run release:cli"
   }
 }
