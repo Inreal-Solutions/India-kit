@@ -72,7 +72,7 @@ function mockAadhaar() {
   const digits = base.split("").reverse().map((d) => parseInt(d, 10));
   let c = 0;
   for (let i = 0; i < digits.length; i++) {
-    c = verhoeffD[c][verhoeffP[i % 8][digits[i]]];
+    c = verhoeffD[c][verhoeffP[(i + 1) % 8][digits[i]]];
   }
   const check = verhoeffInv[c];
   return base + String(check);

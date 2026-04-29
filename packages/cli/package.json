@@ -10,7 +10,7 @@
   "prepare": "pnpm build",
   "publishConfig": { "access": "public" },
   "dependencies": {
-    "@india-kit/core": "workspace:~",
+    "@india-kit/core": "^0.1.0",
     "commander": "^11.0.0",
     "chalk": "^4.1.2",
     "ora": "^6.1.2",

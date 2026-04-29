@@ -51,7 +51,9 @@ export function mockAadhaar(): string {
   const digits = base.split('').reverse().map(d=>parseInt(d,10));
   let c = 0;
   for (let i = 0; i < digits.length; i++) {
-    c = verhoeffD[c][verhoeffP[(i) % 8][digits[i]]];
+    // When computing the check digit, the permutation index is offset by 1
+    // compared to validation. Use (i + 1) % 8 to produce the correct check.
+    c = verhoeffD[c][verhoeffP[(i + 1) % 8][digits[i]]];
   }
   const check = verhoeffInv[c];
   return base + String(check);

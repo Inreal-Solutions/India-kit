@@ -1,0 +1,17 @@
+{
+  "name": "test-install",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@india-kit/core": "file:../india-kit-core-0.1.0.tgz",
+    "@india-kit/js": "file:../india-kit-js-0.1.0.tgz"
+  }
+}
