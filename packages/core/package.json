@@ -25,7 +25,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OWNER/india-kit.git"
+    "url": "https://github.com/Inreal-Solutions/India-kit.git"
+  },
+  "homepage": "https://github.com/Inreal-Solutions/India-kit",
+  "bugs": {
+    "url": "https://github.com/Inreal-Solutions/India-kit/issues"
   },
   "publishConfig": {
     "access": "public"
