@@ -1,12 +1,10 @@
 {
   "branches": ["main", "master"],
-  "tagFormat": "india-kit-cli-v${version}",
+  "tagFormat": "@india-kit/core-v${version}",
   "plugins": [
     ["@semantic-release/commit-analyzer", { "preset": "conventionalcommits" }],
     ["@semantic-release/release-notes-generator", {}],
     ["@semantic-release/changelog", { "changelogFile": "CHANGELOG.md" }],
-    ["@semantic-release/npm", { "npmPublish": true, "pkgRoot": "." }],
-    ["@semantic-release/github", {}],
     ["@semantic-release/git", { "assets": ["package.json", "CHANGELOG.md"], "message": "chore(release): ${nextRelease.version} [skip ci]" }]
   ]
 }
