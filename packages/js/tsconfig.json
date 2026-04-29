@@ -2,7 +2,14 @@
   "extends": "../core/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": ".",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "@india-kit/core": ["../core/src"],
+      "@india-kit/core/*": ["../core/src/*"]
+    }
   },
   "include": ["src/**/*"]
 }
