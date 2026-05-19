@@ -11,7 +11,10 @@
       "Bash(del india-kit-0.1.1.tgz)",
       "Bash(git add *)",
       "Bash(git commit -m 'feat: add Python package, built-in CLI, and multi-registry distribution *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(choco pack *)",
+      "Bash(choco push *)",
+      "Bash(git commit *)"
     ]
   }
 }

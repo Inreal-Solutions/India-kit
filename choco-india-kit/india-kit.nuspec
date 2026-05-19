@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>india-kit</id>
+    <version>0.1.1</version>
+    <title>india-kit</title>
+    <authors>Inreal Solutions</authors>
+    <projectUrl>https://github.com/Inreal-Solutions/India-kit</projectUrl>
+    <licenseUrl>https://github.com/Inreal-Solutions/India-kit/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Definitive Indian Dev Toolkit — validate Aadhaar, PAN, GSTIN, IFSC, UPI, pincode and more. Zero dependencies, TypeScript-first.</description>
+    <summary>Validate Indian identifiers from the command line</summary>
+    <tags>india aadhaar pan gstin ifsc upi validate cli fintech</tags>
+    <dependencies>
+      <dependency id="nodejs" version="18.0.0" />
+    </dependencies>
+  </metadata>
+</package>
