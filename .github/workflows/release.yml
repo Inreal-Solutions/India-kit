@@ -1,31 +1,314 @@
 name: Release
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
-  release:
-    types: [published]
+    inputs:
+      version:
+        description: 'Version to release (e.g. 0.2.0)'
+        required: true
 
 jobs:
-  build-and-upload:
+  # ─── 1. Build standalone binaries ────────────────────────────────────────
+  build-binaries:
+    name: Build binaries
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm run build
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./packages/js/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Compile binaries
+        run: |
+          mkdir -p release-bins
+          npx @yao-pkg/pkg packages/js/dist/bin.js \
+            --targets node20-linux-x64,node20-linux-arm64,node20-macos-x64,node20-macos-arm64,node20-win-x64 \
+            --output release-bins/india-kit
+          ls -lh release-bins/
+
+      - name: Rename binaries
+        run: |
+          cd release-bins
+          for f in india-kit-*; do
+            case "$f" in
+              *linux)      mv "$f" india-kit-linux-x64 ;;
+              *linuxarm64) mv "$f" india-kit-linux-arm64 ;;
+              *macos)      mv "$f" india-kit-macos-x64 ;;
+              *macosarm64) mv "$f" india-kit-macos-arm64 ;;
+              *win.exe)    mv "$f" india-kit-win-x64.exe ;;
+            esac
+          done
+          ls -lh
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries
+          path: release-bins/
+
+  # ─── 2. GitHub Release with all binaries ─────────────────────────────────
+  github-release:
+    name: GitHub Release
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: binaries
+          path: release-bins/
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: india-kit v${{ needs.build-binaries.outputs.version }}
+          body: |
+            ## india-kit v${{ needs.build-binaries.outputs.version }}
+
+            ### One-line install
+
+            **macOS / Linux**
+            ```bash
+            curl -fsSL https://raw.githubusercontent.com/Inreal-Solutions/India-kit/main/install.sh | sh
+            ```
+            **Windows**
+            ```powershell
+            irm https://raw.githubusercontent.com/Inreal-Solutions/India-kit/main/install.ps1 | iex
+            ```
+
+            ### Package managers
+            ```bash
+            npm install -g india-kit   # npm / pnpm / yarn / bun
+            pip install india-kit      # Python
+            brew install india-kit     # macOS/Linux
+            scoop install india-kit    # Windows
+            choco install india-kit    # Windows
+            ```
+
+            ### Direct binary downloads
+            | Platform | File |
+            |---|---|
+            | Linux x64 | `india-kit-linux-x64` |
+            | Linux arm64 | `india-kit-linux-arm64` |
+            | macOS x64 | `india-kit-macos-x64` |
+            | macOS arm64 (M1/M2/M3) | `india-kit-macos-arm64` |
+            | Windows x64 | `india-kit-win-x64.exe` |
+          files: release-bins/*
+          generate_release_notes: true
+
+  # ─── 3. Publish npm ───────────────────────────────────────────────────────
+  publish-npm:
+    name: Publish npm
+    needs: build-binaries
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - name: Install pnpm
-        run: npm i -g pnpm@8
-      - name: Install
-        run: pnpm install
-      - name: Build
-        run: pnpm run build
-      - name: Create release artifact
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm run build
+
+      - run: cd packages/core && pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: cd packages/js && pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: cd packages/cli && pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # ─── 4. Publish PyPI ──────────────────────────────────────────────────────
+  publish-pypi:
+    name: Publish PyPI
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install build twine
+      - run: cd packages/python && python -m build
+
+      - run: twine upload packages/python/dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+
+  # ─── 5. Auto-update Homebrew formula ─────────────────────────────────────
+  update-homebrew:
+    name: Update Homebrew
+    needs: [build-binaries, github-release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: Inreal-Solutions/homebrew-india-kit
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: binaries
+          path: release-bins/
+
+      - name: Compute SHA256
+        id: sha
         run: |
-          mkdir -p release
-          tar -czf release/india-kit-artifacts.tar.gz packages/core/dist packages/cli/dist packages/js/dist
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+          echo "macos_x64=$(sha256sum release-bins/india-kit-macos-x64 | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "macos_arm64=$(sha256sum release-bins/india-kit-macos-arm64 | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "linux_x64=$(sha256sum release-bins/india-kit-linux-x64 | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "linux_arm64=$(sha256sum release-bins/india-kit-linux-arm64 | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
+      - name: Write formula
+        env:
+          VERSION: ${{ needs.build-binaries.outputs.version }}
+          MACOS_X64: ${{ steps.sha.outputs.macos_x64 }}
+          MACOS_ARM64: ${{ steps.sha.outputs.macos_arm64 }}
+          LINUX_X64: ${{ steps.sha.outputs.linux_x64 }}
+          LINUX_ARM64: ${{ steps.sha.outputs.linux_arm64 }}
+        run: |
+          cat > Formula/india-kit.rb << 'FORMULA'
+          class IndiaKit < Formula
+            desc "The Definitive Indian Dev Toolkit"
+            homepage "https://github.com/Inreal-Solutions/India-kit"
+            version "VERSION_PLACEHOLDER"
+            license "MIT"
+
+            on_macos do
+              on_arm do
+                url "https://github.com/Inreal-Solutions/India-kit/releases/download/vVERSION_PLACEHOLDER/india-kit-macos-arm64"
+                sha256 "MACOS_ARM64_PLACEHOLDER"
+              end
+              on_intel do
+                url "https://github.com/Inreal-Solutions/India-kit/releases/download/vVERSION_PLACEHOLDER/india-kit-macos-x64"
+                sha256 "MACOS_X64_PLACEHOLDER"
+              end
+            end
+
+            on_linux do
+              on_arm do
+                url "https://github.com/Inreal-Solutions/India-kit/releases/download/vVERSION_PLACEHOLDER/india-kit-linux-arm64"
+                sha256 "LINUX_ARM64_PLACEHOLDER"
+              end
+              on_intel do
+                url "https://github.com/Inreal-Solutions/India-kit/releases/download/vVERSION_PLACEHOLDER/india-kit-linux-x64"
+                sha256 "LINUX_X64_PLACEHOLDER"
+              end
+            end
+
+            def install
+              os  = OS.mac? ? "macos" : "linux"
+              cpu = Hardware::CPU.arm? ? "arm64" : "x64"
+              bin.install "india-kit-#{os}-#{cpu}" => "india-kit"
+              chmod 0755, bin/"india-kit"
+            end
+
+            test do
+              assert_match "valid", shell_output("#{bin}/india-kit validate pan ABCDE1234F")
+            end
+          end
+          FORMULA
+          sed -i "s/VERSION_PLACEHOLDER/$VERSION/g" Formula/india-kit.rb
+          sed -i "s/MACOS_X64_PLACEHOLDER/$MACOS_X64/g" Formula/india-kit.rb
+          sed -i "s/MACOS_ARM64_PLACEHOLDER/$MACOS_ARM64/g" Formula/india-kit.rb
+          sed -i "s/LINUX_X64_PLACEHOLDER/$LINUX_X64/g" Formula/india-kit.rb
+          sed -i "s/LINUX_ARM64_PLACEHOLDER/$LINUX_ARM64/g" Formula/india-kit.rb
+
+      - name: Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/india-kit.rb
+          git commit -m "chore: update to v${{ needs.build-binaries.outputs.version }}"
+          git push
+
+  # ─── 6. Auto-update Scoop manifest ───────────────────────────────────────
+  update-scoop:
+    name: Update Scoop
+    needs: [build-binaries, github-release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
         with:
-          name: india-kit-artifacts
-          path: release/india-kit-artifacts.tar.gz
+          repository: Inreal-Solutions/scoop-india-kit
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: binaries
+          path: release-bins/
+
+      - name: Compute SHA256
+        id: sha
+        run: |
+          echo "win_x64=$(sha256sum release-bins/india-kit-win-x64.exe | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
+      - name: Write manifest
+        env:
+          VERSION: ${{ needs.build-binaries.outputs.version }}
+          WIN_X64: ${{ steps.sha.outputs.win_x64 }}
+        run: |
+          cat > bucket/india-kit.json << EOF
+          {
+              "version": "$VERSION",
+              "description": "The Definitive Indian Dev Toolkit",
+              "homepage": "https://github.com/Inreal-Solutions/India-kit",
+              "license": "MIT",
+              "url": "https://github.com/Inreal-Solutions/India-kit/releases/download/v$VERSION/india-kit-win-x64.exe",
+              "hash": "$WIN_X64",
+              "bin": "india-kit-win-x64.exe",
+              "shortcuts": [["india-kit-win-x64.exe", "india-kit"]],
+              "checkver": {
+                  "github": "https://github.com/Inreal-Solutions/India-kit"
+              },
+              "autoupdate": {
+                  "url": "https://github.com/Inreal-Solutions/India-kit/releases/download/v\$version/india-kit-win-x64.exe",
+                  "hash": {
+                      "url": "https://github.com/Inreal-Solutions/India-kit/releases/download/v\$version/checksums.txt"
+                  }
+              }
+          }
+          EOF
+
+      - name: Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add bucket/india-kit.json
+          git commit -m "chore: update to v${{ needs.build-binaries.outputs.version }}"
+          git push

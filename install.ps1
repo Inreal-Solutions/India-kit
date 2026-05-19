@@ -1,49 +1,45 @@
-# india-kit Windows installer
+# india-kit Windows installer — downloads standalone binary from GitHub Releases
 # Usage: irm https://raw.githubusercontent.com/Inreal-Solutions/India-kit/main/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
+$REPO = "Inreal-Solutions/India-kit"
+$BINARY = "india-kit"
 
 Write-Host ""
 Write-Host "india-kit — The Definitive Indian Dev Toolkit" -ForegroundColor Cyan
 Write-Host ""
 
-function Install-Via-Npm {
-    Write-Host "-> Installing via npm..." -ForegroundColor Yellow
-    npm install -g india-kit
-    Write-Host "✔ Done! Run: india-kit --help" -ForegroundColor Green
-}
+# Get latest version
+$release = Invoke-RestMethod "https://api.github.com/repos/$REPO/releases/latest"
+$VERSION = $release.tag_name -replace '^v', ''
+Write-Host "-> Latest version: v$VERSION" -ForegroundColor Yellow
 
-function Install-Via-Scoop {
-    Write-Host "-> Installing via Scoop..." -ForegroundColor Yellow
-    scoop bucket add india-kit https://github.com/Inreal-Solutions/scoop-india-kit 2>$null
-    scoop install india-kit
-    Write-Host "✔ Done! Run: india-kit --help" -ForegroundColor Green
-}
+# Download binary
+$BINARY_NAME = "india-kit-win-x64.exe"
+$URL = "https://github.com/$REPO/releases/download/v$VERSION/$BINARY_NAME"
+$INSTALL_DIR = "$env:LOCALAPPDATA\india-kit"
+$DEST = "$INSTALL_DIR\india-kit.exe"
 
-function Install-Via-Choco {
-    Write-Host "-> Installing via Chocolatey..." -ForegroundColor Yellow
-    choco install india-kit -y
-    Write-Host "✔ Done! Run: india-kit --help" -ForegroundColor Green
-}
+New-Item -ItemType Directory -Force -Path $INSTALL_DIR | Out-Null
+Write-Host "-> Downloading $BINARY_NAME..." -ForegroundColor Yellow
+Invoke-WebRequest -Uri $URL -OutFile $DEST
 
-# Prefer npm → scoop → choco → error
-if (Get-Command npm -ErrorAction SilentlyContinue) {
-    Install-Via-Npm
-} elseif (Get-Command scoop -ErrorAction SilentlyContinue) {
-    Install-Via-Scoop
-} elseif (Get-Command choco -ErrorAction SilentlyContinue) {
-    Install-Via-Choco
-} else {
-    Write-Host "✘ No supported package manager found (npm, scoop, choco)." -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Install Node.js from https://nodejs.org then re-run this script."
-    exit 1
+# Add to PATH if not already there
+$userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+if ($userPath -notlike "*$INSTALL_DIR*") {
+    [Environment]::SetEnvironmentVariable("PATH", "$userPath;$INSTALL_DIR", "User")
+    $env:PATH += ";$INSTALL_DIR"
+    Write-Host "-> Added $INSTALL_DIR to PATH" -ForegroundColor Yellow
 }
 
 Write-Host ""
-Write-Host "Quick start:" -ForegroundColor White
+Write-Host "✔ india-kit v$VERSION installed!" -ForegroundColor Green
+Write-Host ""
+Write-Host "Quick start:"
 Write-Host "  india-kit validate pan ABCDE1234F"
 Write-Host "  india-kit validate aadhaar 234123412346"
 Write-Host "  india-kit mock pan"
 Write-Host "  india-kit gst 1000 18"
+Write-Host ""
+Write-Host "Note: Restart your terminal for PATH changes to take effect." -ForegroundColor DarkGray
 Write-Host ""
