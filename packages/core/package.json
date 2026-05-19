@@ -1,10 +1,31 @@
 {
   "name": "@india-kit/core",
   "version": "0.1.0",
-  "description": "Core validation and generators for India-specific identifiers",
+  "description": "Core validation and generators for India-specific identifiers — Aadhaar, PAN, GSTIN, IFSC, UPI, pincode",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "license": "MIT",
+  "author": "Inreal Solutions",
+  "keywords": [
+    "india",
+    "indian",
+    "aadhaar",
+    "pan",
+    "gstin",
+    "ifsc",
+    "upi",
+    "pincode",
+    "validate",
+    "validator",
+    "fintech",
+    "india-kit",
+    "typescript",
+    "gst"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -22,7 +43,9 @@
   },
   "files": ["dist"],
   "sideEffects": false,
-  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Inreal-Solutions/India-kit.git"
@@ -30,9 +53,6 @@
   "homepage": "https://github.com/Inreal-Solutions/India-kit",
   "bugs": {
     "url": "https://github.com/Inreal-Solutions/India-kit/issues"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "devDependencies": {
     "vitest": "^1.0.0",

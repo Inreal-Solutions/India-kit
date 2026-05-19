@@ -1,11 +1,32 @@
 {
-  "name": "@india-kit/js",
+  "name": "india-kit",
   "version": "0.1.0",
-  "description": "JavaScript wrapper for india-kit core",
+  "description": "The definitive Indian developer toolkit — validate Aadhaar, PAN, GSTIN, IFSC, UPI, pincode and more",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": ["dist"],
+  "license": "MIT",
+  "author": "Inreal Solutions",
+  "keywords": [
+    "india",
+    "indian",
+    "aadhaar",
+    "pan",
+    "gstin",
+    "ifsc",
+    "upi",
+    "pincode",
+    "validate",
+    "validator",
+    "fintech",
+    "india-kit",
+    "typescript",
+    "gst"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "prepare": "pnpm build",
   "publishConfig": { "access": "public" },
   "exports": {
@@ -17,21 +38,18 @@
     "./package.json": "./package.json"
   },
   "sideEffects": false,
-  "dependencies": {
-    "@india-kit/core": "^0.1.0"
-  },
   "scripts": {
     "build": "tsup",
     "postbuild": "node ./scripts/generate-dts.js",
     "dev": "tsup --watch",
     "clean": "rimraf dist"
   },
-
   "devDependencies": {
+    "@india-kit/core": "workspace:*",
     "tsup": "^6.6.0",
     "rimraf": "^5.0.0"
-  }
-  ,"repository": {
+  },
+  "repository": {
     "type": "git",
     "url": "https://github.com/Inreal-Solutions/India-kit.git"
   },

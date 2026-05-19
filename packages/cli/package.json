@@ -1,7 +1,27 @@
 {
   "name": "india-kit-cli",
   "version": "0.1.0",
+  "description": "CLI for india-kit — validate Indian identifiers (Aadhaar, PAN, GSTIN, IFSC) from the terminal",
   "private": false,
+  "license": "MIT",
+  "author": "Inreal Solutions",
+  "keywords": [
+    "india",
+    "indian",
+    "aadhaar",
+    "pan",
+    "gstin",
+    "ifsc",
+    "upi",
+    "pincode",
+    "validate",
+    "cli",
+    "india-kit",
+    "fintech"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "bin": {
     "india-kit": "dist/bin.js"
   },
@@ -10,7 +30,7 @@
   "prepare": "pnpm build",
   "publishConfig": { "access": "public" },
   "dependencies": {
-    "@india-kit/core": "^0.1.0",
+    "@india-kit/core": "workspace:*",
     "commander": "^11.0.0",
     "chalk": "^4.1.2",
     "ora": "^6.1.2",
@@ -29,8 +49,7 @@
     "@types/node": "^20.5.1",
     "@types/inquirer": "^9.0.3",
     "@types/semver": "^7.3.14"
-  }
-  ,
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Inreal-Solutions/India-kit.git"

@@ -6,7 +6,7 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   sourcemap: true,
   clean: true,
-  external: ['@india-kit/core'],
+  noExternal: ['@india-kit/core'],
   splitting: false,
   outDir: 'dist',
 });

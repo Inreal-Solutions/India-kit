@@ -51,7 +51,7 @@ importers:
   packages/cli:
     dependencies:
       '@india-kit/core':
-        specifier: workspace:~
+        specifier: workspace:*
         version: link:../core
       chalk:
         specifier: ^4.1.2
@@ -104,11 +104,10 @@ importers:
         version: 1.6.1(@types/node@20.19.39)
 
   packages/js:
-    dependencies:
+    devDependencies:
       '@india-kit/core':
         specifier: workspace:*
         version: link:../core
-    devDependencies:
       rimraf:
         specifier: ^5.0.0
         version: 5.0.10
