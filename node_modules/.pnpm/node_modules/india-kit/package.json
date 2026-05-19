@@ -1,7 +1,10 @@
 {
   "name": "india-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The definitive Indian developer toolkit — validate Aadhaar, PAN, GSTIN, IFSC, UPI, pincode and more",
+  "bin": {
+    "india-kit": "./dist/bin.js"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

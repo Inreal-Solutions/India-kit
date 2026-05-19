@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node \"c:\\\\Users\\\\TIGER\\\\India-kit\\\\packages\\\\js\\\\dist\\\\bin.js\" validate pan ABCDE1234F)",
+      "Bash(node \"c:\\\\Users\\\\TIGER\\\\India-kit\\\\packages\\\\js\\\\dist\\\\bin.js\" mock aadhaar)",
+      "Bash(node \"c:\\\\Users\\\\TIGER\\\\India-kit\\\\packages\\\\js\\\\dist\\\\bin.js\" gst 1000 18)",
+      "Bash(node \"c:\\\\Users\\\\TIGER\\\\India-kit\\\\packages\\\\js\\\\dist\\\\bin.js\" validate ifsc SBIN0000001)",
+      "Bash(node \"c:\\\\Users\\\\TIGER\\\\India-kit\\\\packages\\\\js\\\\dist\\\\bin.js\" --help)",
+      "Bash(curl -sL https://registry.npmjs.org/india-kit/-/india-kit-0.1.1.tgz -o india-kit-0.1.1.tgz)",
+      "Bash(certutil -hashfile india-kit-0.1.1.tgz SHA256)",
+      "Bash(del india-kit-0.1.1.tgz)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat: add Python package, built-in CLI, and multi-registry distribution *)",
+      "Bash(git push *)"
+    ]
+  }
+}
